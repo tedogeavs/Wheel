@@ -8,6 +8,8 @@ const modal = document.querySelector("#result-modal");
 const resultTitle = document.querySelector("#result-title");
 const closeModalButton = document.querySelector("#close-modal");
 const deleteResultButton = document.querySelector("#delete-result");
+const itemCount = document.querySelector("#item-count");
+const listStatus = document.querySelector("#list-status");
 
 const colors = [
   "#f45b69",
@@ -94,6 +96,8 @@ function shorten(text) {
 
 function renderItems() {
   itemsList.innerHTML = "";
+  itemCount.textContent = items.length;
+  listStatus.textContent = isSpinning ? "Spinning" : "Ready";
 
   items.forEach((item, index) => {
     const li = document.createElement("li");
@@ -103,10 +107,11 @@ function renderItems() {
 
     swatch.className = "swatch";
     swatch.style.backgroundColor = colors[index % colors.length];
+    swatch.style.color = colors[index % colors.length];
     label.textContent = item;
     deleteButton.className = "delete-item";
     deleteButton.type = "button";
-    deleteButton.textContent = "×";
+    deleteButton.textContent = "x";
     deleteButton.setAttribute("aria-label", `Delete ${item}`);
     deleteButton.addEventListener("click", () => removeItem(index));
 
@@ -147,6 +152,7 @@ function spinWheel() {
 
   isSpinning = true;
   spinButton.disabled = true;
+  renderItems();
 
   const startRotation = rotation;
   const extraTurns = 5 + Math.random() * 3;

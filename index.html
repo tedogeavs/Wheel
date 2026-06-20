@@ -3,19 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#090b10" />
     <title>Spin Wheel</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
       <section class="panel controls" aria-labelledby="controls-title">
-        <div>
-          <p class="eyebrow">Local spinner</p>
-          <h1 id="controls-title">Wheel items</h1>
+        <div class="header">
+          <div>
+            <p class="eyebrow">Decision wheel</p>
+            <h1 id="controls-title">Wheel Studio</h1>
+          </div>
+          <div class="counter" id="item-count">4</div>
         </div>
 
         <form class="add-form" id="add-form">
-          <label for="item-input">Text</label>
+          <label for="item-input">New sector</label>
           <div class="input-row">
             <input
               id="item-input"
@@ -23,16 +27,21 @@
               type="text"
               maxlength="40"
               autocomplete="off"
-              placeholder="Enter an option"
+              placeholder="Type an option"
             />
             <button type="submit">Add</button>
           </div>
         </form>
 
+        <div class="list-top">
+          <span>Sectors</span>
+          <span id="list-status">Ready</span>
+        </div>
         <ul class="items" id="items-list" aria-label="Wheel items"></ul>
       </section>
 
       <section class="wheel-area" aria-label="Spin wheel">
+        <div class="wheel-glow" aria-hidden="true"></div>
         <div class="wheel-wrap">
           <div class="pointer" aria-hidden="true"></div>
           <canvas id="wheel" width="620" height="620"></canvas>
