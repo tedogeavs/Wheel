@@ -11,6 +11,7 @@ const deleteResultButton = document.querySelector("#delete-result");
 const itemCount = document.querySelector("#item-count");
 const listStatus = document.querySelector("#list-status");
 const soundToggle = document.querySelector("#sound-toggle");
+const soundLabel = document.querySelector("#sound-label");
 
 const colors = [
   "#f45b69",
@@ -33,29 +34,23 @@ let soundEnabled = true;
 let audioContext = null;
 let lastTickIndex = null;
 
-function getAudioContext() {
-  if (!soundEnabled) {
-    return null;
-  }
-
+function createAudioContext() {
   if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
 
-  if (audioContext.state === "suspended") {
-    audioContext.resume();
+    if (!AudioContext) {
+      soundToggle.disabled = true;
+      soundLabel.textContent = "No audio";
+      return null;
+    }
+
+    audioContext = new AudioContext();
   }
 
   return audioContext;
 }
 
-function playTone({ frequency, duration = 0.08, type = "sine", gain = 0.08, delay = 0 }) {
-  const audio = getAudioContext();
-
-  if (!audio) {
-    return;
-  }
-
+function scheduleTone(audio, { frequency, duration = 0.08, type = "sine", gain = 0.08, delay = 0 }) {
   const startedAt = audio.currentTime + delay;
   const oscillator = audio.createOscillator();
   const volume = audio.createGain();
@@ -63,41 +58,67 @@ function playTone({ frequency, duration = 0.08, type = "sine", gain = 0.08, dela
   oscillator.type = type;
   oscillator.frequency.setValueAtTime(frequency, startedAt);
   volume.gain.setValueAtTime(0.0001, startedAt);
-  volume.gain.exponentialRampToValueAtTime(gain, startedAt + 0.01);
+  volume.gain.exponentialRampToValueAtTime(gain, startedAt + 0.012);
   volume.gain.exponentialRampToValueAtTime(0.0001, startedAt + duration);
 
   oscillator.connect(volume);
   volume.connect(audio.destination);
   oscillator.start(startedAt);
-  oscillator.stop(startedAt + duration + 0.02);
+  oscillator.stop(startedAt + duration + 0.03);
+}
+
+function unlockAudio() {
+  const audio = createAudioContext();
+
+  if (!audio) {
+    return Promise.resolve(null);
+  }
+
+  if (audio.state === "suspended") {
+    return audio.resume().then(() => audio).catch(() => null);
+  }
+
+  return Promise.resolve(audio);
+}
+
+function playTone(options) {
+  if (!soundEnabled) {
+    return;
+  }
+
+  unlockAudio().then((audio) => {
+    if (audio) {
+      scheduleTone(audio, options);
+    }
+  });
 }
 
 function playButtonSound() {
-  playTone({ frequency: 520, duration: 0.055, type: "triangle", gain: 0.055 });
-  playTone({ frequency: 780, duration: 0.06, type: "sine", gain: 0.035, delay: 0.025 });
+  playTone({ frequency: 520, duration: 0.07, type: "triangle", gain: 0.09 });
+  playTone({ frequency: 780, duration: 0.075, type: "sine", gain: 0.065, delay: 0.03 });
 }
 
 function playKeySound() {
-  playTone({ frequency: 330 + Math.random() * 80, duration: 0.035, type: "square", gain: 0.018 });
+  playTone({ frequency: 330 + Math.random() * 90, duration: 0.04, type: "triangle", gain: 0.035 });
 }
 
 function playTickSound() {
-  playTone({ frequency: 980, duration: 0.028, type: "square", gain: 0.025 });
+  playTone({ frequency: 980, duration: 0.032, type: "square", gain: 0.05 });
 }
 
 function playResultSound() {
-  playTone({ frequency: 440, duration: 0.12, type: "sine", gain: 0.055 });
-  playTone({ frequency: 660, duration: 0.14, type: "sine", gain: 0.05, delay: 0.06 });
-  playTone({ frequency: 880, duration: 0.16, type: "triangle", gain: 0.045, delay: 0.12 });
+  playTone({ frequency: 440, duration: 0.14, type: "sine", gain: 0.09 });
+  playTone({ frequency: 660, duration: 0.16, type: "sine", gain: 0.085, delay: 0.07 });
+  playTone({ frequency: 880, duration: 0.18, type: "triangle", gain: 0.08, delay: 0.14 });
 }
 
 function setSoundEnabled(enabled) {
   soundEnabled = enabled;
-  soundToggle.textContent = enabled ? "Sound on" : "Sound off";
+  soundLabel.textContent = enabled ? "Audio on" : "Audio off";
   soundToggle.setAttribute("aria-pressed", String(enabled));
 
   if (!enabled && audioContext) {
-    audioContext.suspend();
+    audioContext.suspend().catch(() => {});
   }
 }
 
@@ -305,7 +326,7 @@ soundToggle.addEventListener("click", () => {
   setSoundEnabled(!soundEnabled);
 
   if (soundEnabled) {
-    playButtonSound();
+    unlockAudio().then(() => playButtonSound());
   }
 });
 
