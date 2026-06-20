@@ -212,6 +212,20 @@ h2 {
   gap: 10px;
 }
 
+.limit-message {
+  min-height: 1.15rem;
+  margin: -2px 0 0;
+  color: var(--danger);
+  font-size: 0.82rem;
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.limit-message.visible {
+  opacity: 1;
+}
+
 label,
 .list-top {
   color: var(--muted);

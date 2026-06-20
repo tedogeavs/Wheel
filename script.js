@@ -2,6 +2,7 @@ const canvas = document.querySelector("#wheel");
 const ctx = canvas.getContext("2d");
 const form = document.querySelector("#add-form");
 const input = document.querySelector("#item-input");
+const limitMessage = document.querySelector("#limit-message");
 const itemsList = document.querySelector("#items-list");
 const spinButton = document.querySelector("#spin-button");
 const modal = document.querySelector("#result-modal");
@@ -33,6 +34,7 @@ let winningIndex = null;
 let soundEnabled = true;
 let audioContext = null;
 let lastTickIndex = null;
+const maxSectorLength = input.maxLength;
 
 function createAudioContext() {
   if (!audioContext) {
@@ -218,6 +220,12 @@ function renderItems() {
   spinButton.disabled = items.length === 0 || isSpinning;
 }
 
+function updateLimitMessage() {
+  const reachedLimit = input.value.length >= maxSectorLength;
+  limitMessage.textContent = reachedLimit ? `Maximum length reached: ${maxSectorLength} characters.` : "";
+  limitMessage.classList.toggle("visible", reachedLimit);
+}
+
 function removeItem(index) {
   if (isSpinning) {
     return;
@@ -305,6 +313,7 @@ form.addEventListener("submit", (event) => {
 
   items.push(value);
   input.value = "";
+  updateLimitMessage();
   rotation = -Math.PI / 2;
   renderItems();
   drawWheel();
@@ -316,6 +325,8 @@ input.addEventListener("keydown", (event) => {
     playKeySound();
   }
 });
+
+input.addEventListener("input", updateLimitMessage);
 
 spinButton.addEventListener("click", () => {
   playButtonSound();
