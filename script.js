@@ -10,6 +10,7 @@ const closeModalButton = document.querySelector("#close-modal");
 const deleteResultButton = document.querySelector("#delete-result");
 const itemCount = document.querySelector("#item-count");
 const listStatus = document.querySelector("#list-status");
+const soundToggle = document.querySelector("#sound-toggle");
 
 const colors = [
   "#f45b69",
@@ -28,6 +29,77 @@ let items = ["Pizza", "Movie", "Walk", "Game"];
 let rotation = -Math.PI / 2;
 let isSpinning = false;
 let winningIndex = null;
+let soundEnabled = true;
+let audioContext = null;
+let lastTickIndex = null;
+
+function getAudioContext() {
+  if (!soundEnabled) {
+    return null;
+  }
+
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+
+  return audioContext;
+}
+
+function playTone({ frequency, duration = 0.08, type = "sine", gain = 0.08, delay = 0 }) {
+  const audio = getAudioContext();
+
+  if (!audio) {
+    return;
+  }
+
+  const startedAt = audio.currentTime + delay;
+  const oscillator = audio.createOscillator();
+  const volume = audio.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, startedAt);
+  volume.gain.setValueAtTime(0.0001, startedAt);
+  volume.gain.exponentialRampToValueAtTime(gain, startedAt + 0.01);
+  volume.gain.exponentialRampToValueAtTime(0.0001, startedAt + duration);
+
+  oscillator.connect(volume);
+  volume.connect(audio.destination);
+  oscillator.start(startedAt);
+  oscillator.stop(startedAt + duration + 0.02);
+}
+
+function playButtonSound() {
+  playTone({ frequency: 520, duration: 0.055, type: "triangle", gain: 0.055 });
+  playTone({ frequency: 780, duration: 0.06, type: "sine", gain: 0.035, delay: 0.025 });
+}
+
+function playKeySound() {
+  playTone({ frequency: 330 + Math.random() * 80, duration: 0.035, type: "square", gain: 0.018 });
+}
+
+function playTickSound() {
+  playTone({ frequency: 980, duration: 0.028, type: "square", gain: 0.025 });
+}
+
+function playResultSound() {
+  playTone({ frequency: 440, duration: 0.12, type: "sine", gain: 0.055 });
+  playTone({ frequency: 660, duration: 0.14, type: "sine", gain: 0.05, delay: 0.06 });
+  playTone({ frequency: 880, duration: 0.16, type: "triangle", gain: 0.045, delay: 0.12 });
+}
+
+function setSoundEnabled(enabled) {
+  soundEnabled = enabled;
+  soundToggle.textContent = enabled ? "Sound on" : "Sound off";
+  soundToggle.setAttribute("aria-pressed", String(enabled));
+
+  if (!enabled && audioContext) {
+    audioContext.suspend();
+  }
+}
 
 function drawWheel() {
   const width = canvas.width;
@@ -113,7 +185,10 @@ function renderItems() {
     deleteButton.type = "button";
     deleteButton.textContent = "x";
     deleteButton.setAttribute("aria-label", `Delete ${item}`);
-    deleteButton.addEventListener("click", () => removeItem(index));
+    deleteButton.addEventListener("click", () => {
+      playButtonSound();
+      removeItem(index);
+    });
 
     li.append(swatch, label, deleteButton);
     itemsList.append(li);
@@ -152,6 +227,7 @@ function spinWheel() {
 
   isSpinning = true;
   spinButton.disabled = true;
+  lastTickIndex = getWinningIndex();
   renderItems();
 
   const startRotation = rotation;
@@ -166,6 +242,12 @@ function spinWheel() {
     rotation = startRotation + (targetRotation - startRotation) * eased;
     drawWheel();
 
+    const tickIndex = getWinningIndex();
+    if (tickIndex !== lastTickIndex) {
+      playTickSound();
+      lastTickIndex = tickIndex;
+    }
+
     if (progress < 1) {
       requestAnimationFrame(animate);
       return;
@@ -173,6 +255,7 @@ function spinWheel() {
 
     isSpinning = false;
     winningIndex = getWinningIndex();
+    playResultSound();
     showResult();
     renderItems();
   }
@@ -191,6 +274,7 @@ function closeModal() {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  playButtonSound();
   const value = input.value.trim();
 
   if (!value) {
@@ -206,10 +290,32 @@ form.addEventListener("submit", (event) => {
   input.focus();
 });
 
-spinButton.addEventListener("click", spinWheel);
-closeModalButton.addEventListener("click", closeModal);
+input.addEventListener("keydown", (event) => {
+  if (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete") {
+    playKeySound();
+  }
+});
+
+spinButton.addEventListener("click", () => {
+  playButtonSound();
+  spinWheel();
+});
+
+soundToggle.addEventListener("click", () => {
+  setSoundEnabled(!soundEnabled);
+
+  if (soundEnabled) {
+    playButtonSound();
+  }
+});
+
+closeModalButton.addEventListener("click", () => {
+  playButtonSound();
+  closeModal();
+});
 
 deleteResultButton.addEventListener("click", () => {
+  playButtonSound();
   if (winningIndex !== null) {
     removeItem(winningIndex);
   }
@@ -219,12 +325,14 @@ deleteResultButton.addEventListener("click", () => {
 
 modal.addEventListener("click", (event) => {
   if (event.target === modal) {
+    playButtonSound();
     closeModal();
   }
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && modal.classList.contains("open")) {
+    playButtonSound();
     closeModal();
   }
 });
