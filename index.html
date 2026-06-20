@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin Wheel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel controls" aria-labelledby="controls-title">
+        <div>
+          <p class="eyebrow">Local spinner</p>
+          <h1 id="controls-title">Wheel items</h1>
+        </div>
+
+        <form class="add-form" id="add-form">
+          <label for="item-input">Text</label>
+          <div class="input-row">
+            <input
+              id="item-input"
+              name="item"
+              type="text"
+              maxlength="40"
+              autocomplete="off"
+              placeholder="Enter an option"
+            />
+            <button type="submit">Add</button>
+          </div>
+        </form>
+
+        <ul class="items" id="items-list" aria-label="Wheel items"></ul>
+      </section>
+
+      <section class="wheel-area" aria-label="Spin wheel">
+        <div class="wheel-wrap">
+          <div class="pointer" aria-hidden="true"></div>
+          <canvas id="wheel" width="620" height="620"></canvas>
+          <button class="spin-button" id="spin-button" type="button">Spin</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
+      <div class="modal">
+        <p class="eyebrow">Result</p>
+        <h2 id="result-title"></h2>
+        <div class="modal-actions">
+          <button class="secondary" id="close-modal" type="button">Close</button>
+          <button class="danger" id="delete-result" type="button">Delete sector</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
