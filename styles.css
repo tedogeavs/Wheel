@@ -21,8 +21,10 @@
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   margin: 0;
+  overflow: hidden;
   color: var(--ink);
   background:
     radial-gradient(circle at 14% 18%, rgba(45, 212, 191, 0.2), transparent 26%),
@@ -65,9 +67,13 @@ button:disabled {
 .app {
   display: grid;
   grid-template-columns: minmax(300px, 420px) minmax(360px, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: 34px;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   padding: clamp(18px, 4vw, 48px);
+  overflow: hidden;
 }
 
 .panel {
@@ -81,10 +87,11 @@ button:disabled {
 .controls {
   display: flex;
   flex-direction: column;
-  align-self: center;
+  align-self: stretch;
   gap: 24px;
-  min-height: min(720px, calc(100vh - 96px));
+  min-height: 0;
   padding: clamp(22px, 3.2vw, 34px);
+  overflow: hidden;
 }
 
 .header {
@@ -301,10 +308,31 @@ input::placeholder {
 
 .items {
   display: grid;
+  align-content: start;
   gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
   margin: 0;
-  padding: 0;
+  padding: 0 4px 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   list-style: none;
+  scrollbar-color: rgba(45, 212, 191, 0.55) rgba(255, 255, 255, 0.06);
+  scrollbar-width: thin;
+}
+
+.items::-webkit-scrollbar {
+  width: 8px;
+}
+
+.items::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.items::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(45, 212, 191, 0.55);
 }
 
 .items li {
@@ -367,7 +395,8 @@ input::placeholder {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: calc(100vh - clamp(36px, 8vw, 96px));
+  min-height: 0;
+  overflow: hidden;
 }
 
 .wheel-glow {
@@ -507,10 +536,16 @@ canvas {
 @media (max-width: 860px) {
   .app {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
   }
 
   .controls {
     min-height: auto;
+    max-height: min(620px, calc(100vh - 36px));
+    max-height: min(620px, calc(100dvh - 36px));
   }
 
   .wheel-area {
