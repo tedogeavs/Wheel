@@ -27,6 +27,8 @@ const colors = [
   "#6fcf97",
 ];
 
+const sessionKey = "wheel-studio-session-v1";
+
 let items = ["Pizza", "Movie", "Walk", "Game"];
 let rotation = -Math.PI / 2;
 let isSpinning = false;
@@ -114,13 +116,80 @@ function playResultSound() {
   playTone({ frequency: 880, duration: 0.18, type: "triangle", gain: 0.08, delay: 0.14 });
 }
 
-function setSoundEnabled(enabled) {
+function setSoundEnabled(enabled, persist = true) {
   soundEnabled = enabled;
   soundLabel.textContent = enabled ? "Audio on" : "Audio off";
   soundToggle.setAttribute("aria-pressed", String(enabled));
 
   if (!enabled && audioContext) {
     audioContext.suspend().catch(() => {});
+  }
+
+  if (persist) {
+    saveSession();
+  }
+}
+
+function getSessionState() {
+  return {
+    items,
+    rotation,
+    soundEnabled,
+    inputValue: input.value,
+    winningIndex,
+    modalOpen: modal.classList.contains("open"),
+  };
+}
+
+function saveSession() {
+  try {
+    sessionStorage.setItem(sessionKey, JSON.stringify(getSessionState()));
+  } catch (error) {
+    console.warn("Session could not be saved.", error);
+  }
+}
+
+function loadSession() {
+  try {
+    const savedSession = JSON.parse(sessionStorage.getItem(sessionKey));
+
+    if (!savedSession || typeof savedSession !== "object") {
+      return;
+    }
+
+    if (Array.isArray(savedSession.items)) {
+      const savedItems = savedSession.items
+        .filter((item) => typeof item === "string")
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .map((item) => item.slice(0, maxSectorLength));
+
+      items = savedItems;
+    }
+
+    if (Number.isFinite(savedSession.rotation)) {
+      rotation = savedSession.rotation;
+    }
+
+    if (typeof savedSession.soundEnabled === "boolean") {
+      setSoundEnabled(savedSession.soundEnabled, false);
+    }
+
+    if (typeof savedSession.inputValue === "string") {
+      input.value = savedSession.inputValue.slice(0, maxSectorLength);
+      updateLimitMessage();
+    }
+
+    if (Number.isInteger(savedSession.winningIndex) && savedSession.winningIndex >= 0 && savedSession.winningIndex < items.length) {
+      winningIndex = savedSession.winningIndex;
+
+      if (savedSession.modalOpen) {
+        resultTitle.textContent = items[winningIndex];
+        modal.classList.add("open");
+      }
+    }
+  } catch (error) {
+    console.warn("Session could not be restored.", error);
   }
 }
 
@@ -236,6 +305,7 @@ function removeItem(index) {
   rotation = -Math.PI / 2;
   renderItems();
   drawWheel();
+  saveSession();
 }
 
 function normalizeRotation(angle) {
@@ -287,6 +357,7 @@ function spinWheel() {
     playResultSound();
     showResult();
     renderItems();
+    saveSession();
   }
 
   requestAnimationFrame(animate);
@@ -295,10 +366,12 @@ function spinWheel() {
 function showResult() {
   resultTitle.textContent = items[winningIndex];
   modal.classList.add("open");
+  saveSession();
 }
 
 function closeModal() {
   modal.classList.remove("open");
+  saveSession();
 }
 
 form.addEventListener("submit", (event) => {
@@ -317,6 +390,7 @@ form.addEventListener("submit", (event) => {
   rotation = -Math.PI / 2;
   renderItems();
   drawWheel();
+  saveSession();
   input.focus();
 });
 
@@ -326,7 +400,10 @@ input.addEventListener("keydown", (event) => {
   }
 });
 
-input.addEventListener("input", updateLimitMessage);
+input.addEventListener("input", () => {
+  updateLimitMessage();
+  saveSession();
+});
 
 spinButton.addEventListener("click", () => {
   playButtonSound();
@@ -369,5 +446,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+loadSession();
 renderItems();
 drawWheel();
