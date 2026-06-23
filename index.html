@@ -37,11 +37,11 @@
         </form>
 
         <div class="control-actions" aria-label="Wheel controls">
-          <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true">
+          <button class="sound-toggle utility-button" id="sound-toggle" type="button" aria-pressed="true">
             <span class="sound-dot" aria-hidden="true"></span>
             <span id="sound-label">Audio on</span>
           </button>
-          <button class="reset-button" id="reset-button" type="button">Reset</button>
+          <button class="reset-button utility-button" id="reset-button" type="button">Reset</button>
         </div>
 
         <div class="list-top">
@@ -68,6 +68,18 @@
         <div class="modal-actions">
           <button class="secondary" id="close-modal" type="button">Close</button>
           <button class="danger" id="delete-result" type="button">Delete sector</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="reset-modal" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+      <div class="modal modal-compact">
+        <p class="eyebrow">Reset wheel</p>
+        <h2 id="reset-title">Clear current sectors?</h2>
+        <p class="modal-copy">This will restore the default wheel and remove your current list.</p>
+        <div class="modal-actions">
+          <button class="secondary" id="cancel-reset" type="button">Cancel</button>
+          <button class="danger" id="confirm-reset" type="button">Reset</button>
         </div>
       </div>
     </div>

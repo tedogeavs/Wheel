@@ -149,18 +149,17 @@ h2 {
   font-weight: 900;
 }
 
-.sound-toggle {
+.utility-button {
   position: relative;
   z-index: 4;
   display: inline-grid;
-  grid-template-columns: 10px auto;
   align-items: center;
-  gap: 8px;
-  min-width: 104px;
-  min-height: 40px;
+  justify-content: center;
+  min-width: 108px;
+  min-height: 38px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0 13px;
+  padding: 0 12px;
   color: var(--ink);
   background:
     linear-gradient(180deg, rgba(45, 212, 191, 0.14), rgba(45, 212, 191, 0.045)),
@@ -177,7 +176,7 @@ h2 {
     transform 160ms ease;
 }
 
-.sound-toggle:hover {
+.utility-button:hover {
   border-color: rgba(45, 212, 191, 0.42);
   background:
     linear-gradient(180deg, rgba(45, 212, 191, 0.22), rgba(45, 212, 191, 0.07)),
@@ -188,11 +187,16 @@ h2 {
   transform: translateY(-1px);
 }
 
-.sound-toggle:focus-visible {
+.utility-button:focus-visible {
   outline: 0;
   box-shadow:
     0 0 0 4px rgba(45, 212, 191, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.sound-toggle {
+  grid-template-columns: 9px auto;
+  gap: 7px;
 }
 
 .sound-toggle[aria-pressed="false"] {
@@ -298,33 +302,23 @@ input::placeholder {
 }
 
 .control-actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  align-items: center;
   gap: 10px;
   padding: 2px 0 18px;
   border-bottom: 1px solid var(--line);
 }
 
 .control-actions button {
-  min-height: 44px;
+  flex: 0 0 auto;
 }
 
 .reset-button {
-  min-width: 92px;
   border: 1px solid rgba(251, 82, 102, 0.28);
-  border-radius: 8px;
-  padding: 0 16px;
   color: #ffd7dc;
   background:
     linear-gradient(180deg, rgba(251, 82, 102, 0.14), rgba(251, 82, 102, 0.045)),
     rgba(255, 255, 255, 0.045);
-  font-size: 0.82rem;
-  font-weight: 900;
-  transition:
-    border-color 160ms ease,
-    background 160ms ease,
-    color 160ms ease,
-    transform 160ms ease;
 }
 
 .reset-button:hover {
@@ -546,6 +540,17 @@ canvas {
   padding: 32px;
   background: linear-gradient(180deg, rgba(24, 31, 45, 0.98), rgba(14, 18, 27, 0.98));
   box-shadow: var(--shadow);
+}
+
+.modal-compact {
+  width: min(420px, 100%);
+}
+
+.modal-copy {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.5;
 }
 
 .modal-actions {

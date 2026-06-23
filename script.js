@@ -14,6 +14,9 @@ const listStatus = document.querySelector("#list-status");
 const soundToggle = document.querySelector("#sound-toggle");
 const soundLabel = document.querySelector("#sound-label");
 const resetButton = document.querySelector("#reset-button");
+const resetModal = document.querySelector("#reset-modal");
+const cancelResetButton = document.querySelector("#cancel-reset");
+const confirmResetButton = document.querySelector("#confirm-reset");
 
 const colors = [
   "#f45b69",
@@ -321,10 +324,23 @@ function resetItems() {
   winningIndex = null;
   input.value = "";
   closeModal();
+  closeResetModal();
   updateLimitMessage();
   renderItems();
   drawWheel();
   saveSession();
+}
+
+function openResetModal() {
+  if (isSpinning) {
+    return;
+  }
+
+  resetModal.classList.add("open");
+}
+
+function closeResetModal() {
+  resetModal.classList.remove("open");
 }
 
 function normalizeRotation(angle) {
@@ -439,6 +455,16 @@ soundToggle.addEventListener("click", () => {
 
 resetButton.addEventListener("click", () => {
   playButtonSound();
+  openResetModal();
+});
+
+cancelResetButton.addEventListener("click", () => {
+  playButtonSound();
+  closeResetModal();
+});
+
+confirmResetButton.addEventListener("click", () => {
+  playButtonSound();
   resetItems();
 });
 
@@ -463,8 +489,25 @@ modal.addEventListener("click", (event) => {
   }
 });
 
+resetModal.addEventListener("click", (event) => {
+  if (event.target === resetModal) {
+    playButtonSound();
+    closeResetModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && modal.classList.contains("open")) {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  if (resetModal.classList.contains("open")) {
+    playButtonSound();
+    closeResetModal();
+    return;
+  }
+
+  if (modal.classList.contains("open")) {
     playButtonSound();
     closeModal();
   }
