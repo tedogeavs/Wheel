@@ -169,14 +169,14 @@ h2 {
   transition:
     border-color 160ms ease,
     color 160ms ease,
-    background 160ms ease,
+    background-color 160ms ease,
     box-shadow 160ms ease,
     transform 160ms ease;
 }
 
 .utility-button:not(.reset-button):hover {
   border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.065);
+  background-color: rgba(255, 255, 255, 0.065);
 }
 
 .utility-button:focus-visible {
@@ -190,16 +190,26 @@ h2 {
   grid-template-columns: 9px auto;
   gap: 7px;
   color: #ccfbf1;
-  background:
-    linear-gradient(180deg, rgba(45, 212, 191, 0.18), rgba(45, 212, 191, 0.06)),
-    rgba(255, 255, 255, 0.055);
+  border-color: rgba(45, 212, 191, 0.2);
+  background-color: rgba(45, 212, 191, 0.14);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.utility-button.sound-toggle:hover {
+  border-color: rgba(45, 212, 191, 0.28);
+  background-color: rgba(45, 212, 191, 0.2);
 }
 
 .sound-toggle[aria-pressed="false"] {
   color: var(--subtle);
-  background: transparent;
+  border-color: transparent;
+  background-color: transparent;
   box-shadow: none;
+}
+
+.utility-button.sound-toggle[aria-pressed="false"]:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.065);
 }
 
 .sound-dot {
@@ -316,10 +326,12 @@ input::placeholder {
 }
 
 .reset-button {
-  border-color: rgba(251, 82, 102, 0.18);
-  color: #ffe4e8;
-  background-color: rgba(251, 82, 102, 0.13);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  border-color: rgba(251, 82, 102, 0.34);
+  color: #fff0f3;
+  background-color: rgba(251, 82, 102, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 0 18px rgba(251, 82, 102, 0.08);
   transition:
     border-color 140ms ease,
     color 140ms ease,
@@ -328,9 +340,9 @@ input::placeholder {
 }
 
 .reset-button:hover {
-  border-color: rgba(251, 82, 102, 0.2);
+  border-color: rgba(251, 82, 102, 0.44);
   color: #fff;
-  background-color: rgba(251, 82, 102, 0.2);
+  background-color: rgba(251, 82, 102, 0.34);
 }
 
 .reset-button:disabled {
