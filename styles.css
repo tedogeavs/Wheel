@@ -88,7 +88,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   align-self: stretch;
-  gap: 24px;
+  gap: 20px;
   min-height: 0;
   padding: clamp(22px, 3.2vw, 34px);
   overflow: hidden;
@@ -217,6 +217,8 @@ h2 {
 .add-form {
   display: grid;
   gap: 10px;
+  padding: 18px 0 2px;
+  border-top: 1px solid var(--line);
 }
 
 .limit-message {
@@ -295,11 +297,56 @@ input::placeholder {
   box-shadow: 0 18px 38px rgba(20, 184, 166, 0.28);
 }
 
+.control-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 2px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.control-actions button {
+  min-height: 44px;
+}
+
+.reset-button {
+  min-width: 92px;
+  border: 1px solid rgba(251, 82, 102, 0.28);
+  border-radius: 8px;
+  padding: 0 16px;
+  color: #ffd7dc;
+  background:
+    linear-gradient(180deg, rgba(251, 82, 102, 0.14), rgba(251, 82, 102, 0.045)),
+    rgba(255, 255, 255, 0.045);
+  font-size: 0.82rem;
+  font-weight: 900;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.reset-button:hover {
+  border-color: rgba(251, 82, 102, 0.52);
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(251, 82, 102, 0.28), rgba(251, 82, 102, 0.12)),
+    rgba(255, 255, 255, 0.065);
+  transform: translateY(-1px);
+}
+
+.reset-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
 .list-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: -10px;
+  margin-bottom: -8px;
 }
 
 .list-top span:last-child {

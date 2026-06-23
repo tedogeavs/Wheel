@@ -16,10 +16,6 @@
             <h1 id="controls-title">Wheel Studio</h1>
           </div>
           <div class="header-actions">
-            <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true">
-              <span class="sound-dot" aria-hidden="true"></span>
-              <span id="sound-label">Audio on</span>
-            </button>
             <div class="counter" id="item-count">4</div>
           </div>
         </div>
@@ -39,6 +35,14 @@
           </div>
           <p class="limit-message" id="limit-message" aria-live="polite"></p>
         </form>
+
+        <div class="control-actions" aria-label="Wheel controls">
+          <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true">
+            <span class="sound-dot" aria-hidden="true"></span>
+            <span id="sound-label">Audio on</span>
+          </button>
+          <button class="reset-button" id="reset-button" type="button">Reset</button>
+        </div>
 
         <div class="list-top">
           <span>Sectors</span>

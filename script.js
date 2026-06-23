@@ -13,6 +13,7 @@ const itemCount = document.querySelector("#item-count");
 const listStatus = document.querySelector("#list-status");
 const soundToggle = document.querySelector("#sound-toggle");
 const soundLabel = document.querySelector("#sound-label");
+const resetButton = document.querySelector("#reset-button");
 
 const colors = [
   "#f45b69",
@@ -28,8 +29,9 @@ const colors = [
 ];
 
 const sessionKey = "wheel-studio-session-v1";
+const defaultItems = ["Pizza", "Movie", "Walk", "Game"];
 
-let items = ["Pizza", "Movie", "Walk", "Game"];
+let items = [...defaultItems];
 let rotation = -Math.PI / 2;
 let isSpinning = false;
 let winningIndex = null;
@@ -287,6 +289,7 @@ function renderItems() {
   });
 
   spinButton.disabled = items.length === 0 || isSpinning;
+  resetButton.disabled = isSpinning;
 }
 
 function updateLimitMessage() {
@@ -303,6 +306,22 @@ function removeItem(index) {
   items.splice(index, 1);
   winningIndex = null;
   rotation = -Math.PI / 2;
+  renderItems();
+  drawWheel();
+  saveSession();
+}
+
+function resetItems() {
+  if (isSpinning) {
+    return;
+  }
+
+  items = [...defaultItems];
+  rotation = -Math.PI / 2;
+  winningIndex = null;
+  input.value = "";
+  closeModal();
+  updateLimitMessage();
   renderItems();
   drawWheel();
   saveSession();
@@ -416,6 +435,11 @@ soundToggle.addEventListener("click", () => {
   if (soundEnabled) {
     unlockAudio().then(() => playButtonSound());
   }
+});
+
+resetButton.addEventListener("click", () => {
+  playButtonSound();
+  resetItems();
 });
 
 closeModalButton.addEventListener("click", () => {
