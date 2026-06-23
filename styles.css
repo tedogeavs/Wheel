@@ -174,7 +174,7 @@ h2 {
     transform 160ms ease;
 }
 
-.utility-button:hover {
+.utility-button:not(.reset-button):hover {
   border-color: rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.065);
 }
