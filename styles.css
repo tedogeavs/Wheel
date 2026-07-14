@@ -601,6 +601,14 @@ canvas {
 }
 
 @media (max-width: 860px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .app {
     grid-template-columns: 1fr;
     height: auto;
@@ -627,6 +635,17 @@ canvas {
 }
 
 @media (max-width: 460px) {
+  .app {
+    gap: 22px;
+    padding: 14px;
+  }
+
+  .controls {
+    gap: 16px;
+    max-height: min(600px, calc(100dvh - 28px));
+    padding: 20px;
+  }
+
   .input-row {
     grid-template-columns: 1fr;
   }
@@ -637,5 +656,25 @@ canvas {
 
   h1 {
     font-size: 2.5rem;
+  }
+
+  .wheel-area {
+    padding: 26px 0 34px;
+  }
+
+  .wheel-wrap,
+  .wheel-glow {
+    width: min(84vw, 420px);
+  }
+
+  .pointer {
+    top: -18px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .spin-button {
+    border-width: 7px;
+    font-size: 1rem;
   }
 }
